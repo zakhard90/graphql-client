@@ -2,10 +2,8 @@
   <div>
     <h1 class="green">Uniswap Liquidity Trends</h1>
     <Selector />
-    <div v-if="loading">Loading data...</div>
-    <div v-else>
-      <Chart :dataset="dataset" :token="store.token" />
-    </div>
+    <div v-if="loading"></div>
+    <Chart />
     <div></div>
   </div>
 </template>
@@ -14,21 +12,41 @@
 import Chart from "./Chart.vue";
 import Selector from "./Selector.vue";
 
-import { reactive, toRefs } from "vue";
+import { reactive, toRefs, ref, watch } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { queryDailyVolumeUSD } from "../queries/dailyVolumeUSD";
 import store from "../store";
 
-const getChartData = (token) => {
+const getChartData = (tokenId) => {
   try {
     const variables = {
-      token: token,
+      token: tokenId,
       from: 1640995200,
       to: 1643673600,
     };
 
-    let { result, loading, error } = useQuery(queryDailyVolumeUSD, variables);
-    const queryResult = reactive({ dataset: result, loading, error });
+    const { result, loading, error, refetch } = useQuery(
+      queryDailyVolumeUSD,
+      variables
+    );
+
+    store.dataset = result;
+    watch(
+      () => store.token,
+      (token, prev) => {
+        if (token.symbol !== prev.symbol) {
+          variables.token = token.id;
+          console.log(token.id);
+          refetch(variables);
+        }
+      }
+    );
+
+    const queryResult = reactive({
+      dataset: result,
+      loading,
+      error,
+    });
     return toRefs(queryResult);
   } catch (e) {
     console.error(e);
@@ -48,9 +66,8 @@ export default {
   setup() {
     const { dataset, loading, error } = getChartData(store.token.id);
     return {
-      dataset,
       loading,
-      error,
+      dataset,
     };
   },
 };

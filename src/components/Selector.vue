@@ -25,6 +25,7 @@ export default {
   },
   setup() {
     const { result, loading, error } = useQuery(queryTopFiveTokens);
+    
     return {
       result,
       loading,

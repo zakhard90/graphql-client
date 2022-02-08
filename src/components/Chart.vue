@@ -5,9 +5,11 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, watch, ref } from "vue";
 import { Chart, registerables } from "chart.js";
 import moment from "moment";
+import store from "../store";
+
 Chart.register(...registerables);
 
 const getTime = () => {
@@ -26,6 +28,7 @@ const formatDate = (date) => {
 };
 
 const getLineData = (dataset) => {
+  console.log(dataset.tokenDayDatas);
   let data = [...dataset.tokenDayDatas].reverse();
   const line = data.map((d) => {
     return d.totalLiquidityUSD;
@@ -35,11 +38,10 @@ const getLineData = (dataset) => {
   });
 
   return { data: line, labels };
-  // toRefs()
 };
 
 const renderChart = (lineData, token) => {
-  let target = document.getElementById("chart");
+  let target = document.getElementById("chart").getContext("2d");
   if (target !== null) {
     let data = {
       labels: lineData.labels,
@@ -68,32 +70,39 @@ const renderChart = (lineData, token) => {
         },
       },
     };
-    return new Chart(target, config);
+    const chart = Chart.getChart(target);
+    if (chart !== undefined) {
+      chart.destroy();
+    }
+
+    new Chart(target, config);
+
+    return true;
   } else {
     return false;
   }
 };
 
 export default defineComponent({
-  mounted() {
-    renderChart(this.lineData, this.token);
+  data() {
+    return {
+      store,
+    };
   },
-  props: {
-    dataset: {
-      type: Object,
-      required: true,
-    },
-    token: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup(props) {
+
+  setup() {
     const now = getTime();
-    const lineData = getLineData(props.dataset, props.token);
+    watch(
+      () => [store.dataset, store.token],
+      ([dataset, token], [prevDataset, prevToken]) => {
+        if (token.id !== prevToken.id) {
+          renderChart(getLineData(dataset, token), token);
+        }
+      }
+    );
+
     return {
       now,
-      lineData,
     };
   },
 });
