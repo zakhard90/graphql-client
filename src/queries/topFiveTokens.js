@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const queryTopFiveTokens = gql
     `
-      {
+      query TopFiveTokens {
         tokens(
           first: 5
           orderBy: tradeVolumeUSD

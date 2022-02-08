@@ -1,35 +1,47 @@
-
 <template>
-  <div class="greetings">
-    <h1 class="green">Charts</h1>
-
-    <h6>Tokens</h6>
-    <p v-if="error">Something went wrong...</p>
-    <p v-if="loading">Loading...</p>
-    <p v-else v-for="token in result.tokens" :key="token.id">
-      {{ token.symbol }} - {{ token.name }}
-    </p>
-    <div></div>
+  <div>
+    <canvas id="chart" width="400" height="400"></canvas>
   </div>
 </template>
 
 <script>
-// import { ref, reactive } from "vue"
-import { useQuery } from "@vue/apollo-composable";
-import { queryTopFiveTokens } from "../queries/topFiveTokens";
+import { Chart, registerables } from "chart.js";
 
 export default {
-  setup() {
-    const { result, loading, error } = useQuery(queryTopFiveTokens);
-    console.log(result);
-    return {
-      result,
-      loading,
-      error,
+  name: "Chart",
+  created() {
+    Chart.register(...registerables);
+  },
+  mounted() {
+    let target = document.getElementById("chart");
+    let data = {
+      labels: ["January", "February"],
+      datasets: [
+        {
+          label: "Data One",
+          backgroundColor: "#f87979",
+          data: [40, 20],
+        },
+      ],
     };
+
+    let config = {
+      type: "line",
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "top",
+          },
+          title: {
+            display: true,
+            text: "Total USD Volume",
+          },
+        },
+      },
+    };
+    new Chart(target, config);
   },
 };
 </script>
-
-<style scoped>
-</style>

@@ -1,5 +1,5 @@
 <script setup>
-import Chart from "./components/Chart.vue";
+import Data from "./components/Data.vue";
 
 </script>
 
@@ -9,7 +9,7 @@ import Chart from "./components/Chart.vue";
   </header>
 
   <main>
-    <Chart />
+    <Data />
   </main>
 </template>
 
