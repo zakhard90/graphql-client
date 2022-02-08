@@ -4,10 +4,6 @@ import Data from "./components/Data.vue";
 </script>
 
 <template>
-  <header>
-    <div class="wrapper"></div>
-  </header>
-
   <main>
     <Data />
   </main>
@@ -17,7 +13,7 @@ import Data from "./components/Data.vue";
 @import "./assets/base.css";
 
 #app {
-  max-width: 1280px;
+  width: 95vh;
   margin: 0 auto;
   padding: 2rem;
 
@@ -50,12 +46,6 @@ a,
   body {
     display: flex;
     place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
   }
 
   header {
