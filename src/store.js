@@ -1,7 +1,16 @@
 import { reactive } from 'vue';
-
+import moment from 'moment';
 export default reactive({
-    token: { name: "WASDAs", symbol: "WETH", id: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2" },
+    token: {},
     dataset: {},
     chart: {},
+    date: new function () {
+        this.from = moment().subtract(10, 'd').toDate();
+        this.to = moment().toDate();
+        this.range = [this.from, this.to];
+    },
+    interval: {
+        id: "D",
+        name: "Daily"
+    }
 });

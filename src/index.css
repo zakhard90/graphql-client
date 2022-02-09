@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    font-weight: 300;
+}
+
+#app {
+    width: 95vw;
+    margin: 0 auto;
+    padding: 2rem;
+
+    font-weight: normal;
+}
+
+@media (hover: hover) {
+    a:hover {
+        background-color: hsla(160, 100%, 37%, 0.2);
+    }
+}
+
+@media (min-width: 1024px) {
+    #app {
+        max-width: 1280px;
+
+        font-weight: normal;
+    }
+
+    body {
+        display: flex;
+        place-items: center;
+    }
+}
+
+.dp__input_wrap input {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+select {
+    border: 1px solid #ddd;
+    outline: none !important;
+    transition: border-color 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+select:hover,
+select:focus {
+    border: 1px solid #aaaeb7;
+}
+
+.dark select {
+    border: 1px solid #364254;
+}
+
+.dark select:hover,
+.dark select:focus {
+    border: 1px solid #aaaeb7;
+}
+
+.dp__theme_dark {
+    --dp-background-color: #1e293b;
+    --dp-text-color: #ffffff;
+    --dp-hover-color: #3d4d68;
+    --dp-hover-text-color: #ffffff;
+    --dp-hover-icon-color: #959595;
+    --dp-primary-color: #005cb2;
+    --dp-primary-text-color: #ffffff;
+    --dp-secondary-color: #a9a9a9;
+    --dp-border-color: #364254;
+    --dp-menu-border-color: #364254;
+    --dp-border-color-hover: #aaaeb7;
+    --dp-disabled-color: #737373;
+    --dp-scroll-bar-background: #1e293b;
+    --dp-scroll-bar-color: #3d4d68;
+    --dp-success-color: #538be7;
+    --dp-success-color-disabled: #284878;
+    --dp-icon-color: #959595;
+    --dp-danger-color: #e53935;
+}
+
+progress[value]::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.075);
+}
+
+progress[value]::-webkit-progress-value {
+    background-size: 100%;
+    background-image: -webkit-linear-gradient(-135deg, #09c 0%, #295599 100%);
+}

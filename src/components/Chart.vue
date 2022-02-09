@@ -1,6 +1,12 @@
 <template>
-  <div>
+  <div class="mt-6">
     <canvas id="chart" width="400" height="200"></canvas>
+    <progress
+      id="initialProgress"
+      max="1"
+      value="0"
+      style="width: 100%; height: 0.25rem;"
+    ></progress>
   </div>
 </template>
 
@@ -24,60 +30,109 @@ const formatNumber = (number) => {
 };
 
 const formatDate = (date) => {
-  return moment.unix(date).format("DD-MM-YYYY");
+  return moment.unix(date).format("DD.MM");
 };
 
 const getLineData = (dataset) => {
-  console.log(dataset.tokenDayDatas);
-  let data = [...dataset.tokenDayDatas].reverse();
-  const line = data.map((d) => {
-    return d.totalLiquidityUSD;
-  });
-  const labels = data.map((d) => {
-    return formatDate(d.date);
-  });
-
-  return { data: line, labels };
+  if (dataset !== undefined && dataset !== null) {
+    let data = [...dataset.tokenDayDatas].reverse();
+    const line = data.map((d) => {
+      return d.totalLiquidityUSD;
+    });
+    const labels = data.map((d) => {
+      return formatDate(d.date);
+    });
+    return { data: line, labels };
+  } else {
+    return null;
+  }
 };
 
 const renderChart = (lineData, token) => {
-  let target = document.getElementById("chart").getContext("2d");
-  if (target !== null) {
-    let data = {
-      labels: lineData.labels,
-      datasets: [
-        {
-          label: `${token.name} ${token.symbol}`,
-          backgroundColor: "#333",
-          data: lineData.data,
-        },
-      ],
-    };
+  if (lineData !== undefined && lineData !== null) {
+    let target = document.getElementById("chart").getContext("2d");
+    const initProgress = document.getElementById("initialProgress");
+    if (target !== null) {
+      let data = {
+        labels: lineData.labels,
+        datasets: [
+          {
+            label: `${token.name} ${token.symbol}`,
+            backgroundColor: "#5691f1",
+            data: lineData.data,
+          },
+        ],
+      };
 
-    let config = {
-      type: "line",
-      data: data,
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: "top",
+      let config = {
+        type: "line",
+        data: data,
+        options: {
+          responsive: true,
+          elements: {
+            line: {
+              borderColor: "#295599",
+            },
           },
-          title: {
-            display: true,
-            text: "Total USD Volume",
+          plugins: {
+            legend: {
+              display: false,
+            },
+            title: {
+              display: true,
+              text: "Total USD Volume",
+            },
+          },
+          scales: {
+            x: {
+              grid: {
+                color: "#193054",
+              },
+              ticks: {
+                color: "#ffffff",
+                callback: function (val, index) {
+                  return index % 4 === 0 ? this.getLabelForValue(val) : "";
+                },
+              },
+            },
+            y: {
+              grid: {
+                color: "#193054",
+              },
+              ticks: {
+                color: "#ffffff",
+                callback: function (val, index) {
+                  return val / 1e6 + " M";
+                },
+              },
+            },
+          },
+          animation: {
+            duration: 2000,
+            onProgress: function (context) {
+              if (context.initial) {
+                initProgress.value = context.currentStep / context.numSteps * 2;
+              } 
+            },
+            onComplete: function (context) {
+              if (context.initial) {
+                console.log("Initial animation finished");
+              } 
+            },
           },
         },
-      },
-    };
-    const chart = Chart.getChart(target);
-    if (chart !== undefined) {
-      chart.destroy();
+      };
+      const chart = Chart.getChart(target);
+      if (chart !== undefined) {
+        chart.destroy();
+      }
+
+      new Chart(target, config);
+
+      return true;
+    } else {
+      return false;
     }
-
-    new Chart(target, config);
-
-    return true;
   } else {
     return false;
   }
@@ -95,7 +150,12 @@ export default defineComponent({
     watch(
       () => [store.dataset, store.token],
       ([dataset, token], [prevDataset, prevToken]) => {
-        if (token.id !== prevToken.id) {
+        if (
+          prevDataset == undefined ||
+          JSON.stringify(dataset) != JSON.stringify(prevDataset) ||
+          prevToken.id == undefined ||
+          token.id !== prevToken.id
+        ) {
           renderChart(getLineData(dataset, token), token);
         }
       }
