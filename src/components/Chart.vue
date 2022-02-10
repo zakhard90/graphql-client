@@ -1,11 +1,11 @@
 <template>
   <div class="mt-6">
-    <canvas id="chart" width="400" height="200"></canvas>
+    <canvas id="chart"> </canvas>
     <progress
       id="initialProgress"
       max="1"
       value="0"
-      style="width: 100%; height: 0.25rem;"
+      style="width: 100%; height: 0.2rem"
     ></progress>
   </div>
 </template>
@@ -33,14 +33,53 @@ const formatDate = (date) => {
   return moment.unix(date).format("DD.MM");
 };
 
+// wip
+const aggregateMonthly = (dataset) => {
+  let output = { volumeDataset: [] };
+  dataset.volumeDataset.forEach((d, i) => {
+    let d1 = {
+      ...d,
+      date: moment(d.date * 1000)
+        .startOf("month")
+        .unix(),
+    };
+    output.volumeDataset[i] = d1;
+  });
+
+  let group = output.volumeDataset.reduce((rv, x) => {
+    (rv[x["date"]] = rv[x["date"]] || []).push(x);
+    return rv;
+  }, {});
+
+  output.volumeDataset = [];
+  let i = 0;
+  for (let m in group) {
+    let g = {
+      ...group[m][0],
+      totalLiquidityUSD: group[m].reduce(
+        (a, b) => Number(a) + (Number(b["totalLiquidityUSD"]) || 0),
+        0
+      ),
+    };
+    output.volumeDataset[i++] = g;
+  }
+  output.volumeDataset.reverse();
+  return output;
+};
+
 const getLineData = (dataset) => {
   if (dataset !== undefined && dataset !== null) {
-    let data = [...dataset.tokenDayDatas].reverse();
+    let data = [...dataset.volumeDataset].reverse();
+
     const line = data.map((d) => {
       return d.totalLiquidityUSD;
     });
     const labels = data.map((d) => {
-      return formatDate(d.date);
+      if (store.interval.id === "M") {
+        return moment(d.date * 1000).format("MMM");
+      } else {
+        return moment(d.date * 1000).format("DD.MM");
+      }
     });
     return { data: line, labels };
   } else {
@@ -50,15 +89,19 @@ const getLineData = (dataset) => {
 
 const renderChart = (lineData, token) => {
   if (lineData !== undefined && lineData !== null) {
-    let target = document.getElementById("chart").getContext("2d");
+    const target = document.getElementById("chart").getContext("2d");
     const initProgress = document.getElementById("initialProgress");
+    const spinner = document.getElementById("spinner");
+
+    const ratio = window.innerWidth < 720 ? 1 : 16 / 9;
+
     if (target !== null) {
       let data = {
         labels: lineData.labels,
         datasets: [
           {
             label: `${token.name} ${token.symbol}`,
-            backgroundColor: "#5691f1",
+            backgroundColor: "#09c",
             data: lineData.data,
           },
         ],
@@ -68,6 +111,8 @@ const renderChart = (lineData, token) => {
         type: "line",
         data: data,
         options: {
+          aspectRatio: ratio,
+          maintainAspectRatio: true,
           responsive: true,
           elements: {
             line: {
@@ -80,7 +125,8 @@ const renderChart = (lineData, token) => {
             },
             title: {
               display: true,
-              text: "Total USD Volume",
+              color: "#295599",
+              text: "Total Liquidity Volume (USD)",
             },
           },
           scales: {
@@ -91,7 +137,9 @@ const renderChart = (lineData, token) => {
               ticks: {
                 color: "#ffffff",
                 callback: function (val, index) {
-                  return index % 4 === 0 ? this.getLabelForValue(val) : "";
+                  return store.interval.id == "M" || index % 5 === 0
+                    ? this.getLabelForValue(val)
+                    : "";
                 },
               },
             },
@@ -111,13 +159,14 @@ const renderChart = (lineData, token) => {
             duration: 2000,
             onProgress: function (context) {
               if (context.initial) {
-                initProgress.value = context.currentStep / context.numSteps * 2;
-              } 
+                initProgress.value =
+                  (context.currentStep / context.numSteps) * 2;
+              }
             },
             onComplete: function (context) {
               if (context.initial) {
-                console.log("Initial animation finished");
-              } 
+                spinner.classList.add("hidden");
+              }
             },
           },
         },
@@ -148,13 +197,11 @@ export default defineComponent({
   setup() {
     const now = getTime();
     watch(
-      () => [store.dataset, store.token],
-      ([dataset, token], [prevDataset, prevToken]) => {
+      () => [store.dataset, store.token, store.interval.id],
+      ([dataset, token, interval], [prevDataset, prevToken, prevInterval]) => {
         if (
           prevDataset == undefined ||
-          JSON.stringify(dataset) != JSON.stringify(prevDataset) ||
-          prevToken.id == undefined ||
-          token.id !== prevToken.id
+          JSON.stringify(dataset) != JSON.stringify(prevDataset)
         ) {
           renderChart(getLineData(dataset, token), token);
         }

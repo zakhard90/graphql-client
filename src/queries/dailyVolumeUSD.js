@@ -3,7 +3,8 @@ import gql from "graphql-tag";
 export const queryDailyVolumeUSD = gql
     `
       query DailyVolumeUSD ($token: String!, $from: Int!, $to: Int!){
-        tokenDayDatas (
+        volumeDataset: tokenDayDatas (
+            first: 1000,
             orderBy: date,
             orderDirection: desc, 
             where: {

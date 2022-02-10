@@ -4,14 +4,20 @@
 
 html {
     font-weight: 300;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
 }
 
 #app {
-    width: 95vw;
+    height: 100vh;
+    width: 100vw;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1rem;
 
-    font-weight: normal;
+    font-weight: 300;
 }
 
 @media (hover: hover) {
@@ -22,9 +28,9 @@ html {
 
 @media (min-width: 1024px) {
     #app {
+        width: 95vw;
         max-width: 1280px;
-
-        font-weight: normal;
+        padding: 2rem;
     }
 
     body {
@@ -47,6 +53,10 @@ select {
 select:hover,
 select:focus {
     border: 1px solid #aaaeb7;
+}
+
+.dark body {
+    background-image: linear-gradient(0deg, #172244 0%, #12171e 100%);
 }
 
 .dark select {
@@ -86,4 +96,38 @@ progress[value]::-webkit-progress-bar {
 progress[value]::-webkit-progress-value {
     background-size: 100%;
     background-image: -webkit-linear-gradient(-135deg, #09c 0%, #295599 100%);
+}
+
+.spinner {
+    position: absolute;
+    width: 3rem;
+    height: 3rem;
+    left: calc(50% - 1.5rem);
+    top: calc(50% - 1.5rem);
+}
+
+.spinner:after {
+    content: " ";
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    margin: auto;
+    border-radius: 50%;
+    border: 0.2rem solid #255b9d;
+    border-color: #255b9d transparent #255b9d transparent;
+    animation: spinner 1.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+}
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    33% {
+        transform: rotate(60deg);
+    }
+    66% {
+        transform: rotate(300deg) scale(0.8);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

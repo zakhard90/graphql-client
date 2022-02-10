@@ -1,9 +1,9 @@
 <template >
-  <p v-if="error">Something went wrong...</p>
-  <p v-if="loading">Loading...</p>
+  <p v-if="error" class="dark:text-white">Something went wrong...</p>
+  <p v-if="loading" class="dark:text-white">Loading...</p>
   <div v-else>
-    <div class="flex mb-4 -mx-2 h-24">
-      <div class="w-1/3 h-12 px-2">
+    <div class="grid md:grid-cols-3 xs:grid-cols-1 gap-2 mb-4 md:h-24">
+      <div class="md:h-12 px-2">
         <label class="block text-gray-700 mb-2 dark:text-white">Token</label>
         <select
           class="
@@ -24,7 +24,7 @@
           </option>
         </select>
       </div>
-      <div class="w-1/3 h-12 px-2">
+      <div class="md:h-12 px-2">
         <label class="block text-gray-700 mb-2 dark:text-white"
           >Date range</label
         >
@@ -39,7 +39,7 @@
           dark
         ></Datepicker>
       </div>
-      <div class="w-1/3 h-12 px-2">
+      <div class="md:h-12 px-2">
         <label class="block text-gray-700 mb-2 dark:text-white">Interval</label>
         <select
           class="
@@ -81,10 +81,7 @@ import store from "../store";
 import "vue3-date-time-picker/dist/main.css";
 
 const updateDates = (dateRange) => {
-  console.log(dateRange);
-  console.log(Math.floor(dateRange[0].getTime() / 1000));
   store.date.from = moment(dateRange[0].getTime()).toDate();
-  console.log(Math.floor(dateRange[1].getTime() / 1000));
   store.date.to = moment(dateRange[1].getTime()).toDate();
 };
 
@@ -98,17 +95,9 @@ export default defineComponent({
       dateFormat: "dd-MM-yyyy",
       intervals: [
         {
-          id: "H",
-          name: "Hourly",
-        },
-        {
           id: "D",
           name: "Daily",
-        },
-        {
-          id: "M",
-          name: "Monthly",
-        },
+        }
       ],
     };
   },

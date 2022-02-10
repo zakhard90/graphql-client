@@ -12,5 +12,6 @@ export default reactive({
     interval: {
         id: "D",
         name: "Daily"
-    }
+    },
+    query : null
 });
