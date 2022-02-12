@@ -1,5 +1,5 @@
 {
-    "name": "uniswapv2-challange",
+    "name": "uniswapv2-graphql-client",
     "version": "0.0.1",
     "scripts": {
         "dev": "vite",
