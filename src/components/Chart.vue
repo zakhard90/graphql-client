@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-6">
+  <div class="mt-2">
     <canvas id="chart"> </canvas>
     <progress
       id="initialProgress"
@@ -101,7 +101,7 @@ const renderChart = (lineData, token) => {
         datasets: [
           {
             label: `${token.name} ${token.symbol}`,
-            backgroundColor: "#09c",
+            backgroundColor: "#f700e4",
             data: lineData.data,
           },
         ],

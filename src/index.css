@@ -56,11 +56,11 @@ select:focus {
 }
 
 .dark body {
-    background-image: linear-gradient(0deg, #172244 0%, #12171e 100%);
+    background-image: linear-gradient(90deg, #13234d 0%, #12171e 100%);
 }
 
 .dark select {
-    border: 1px solid #364254;
+    border: 1px solid #212640;
 }
 
 .dark select:hover,
@@ -69,24 +69,28 @@ select:focus {
 }
 
 .dp__theme_dark {
-    --dp-background-color: #1e293b;
+    --dp-background-color: #1e223b;
     --dp-text-color: #ffffff;
-    --dp-hover-color: #3d4d68;
+    --dp-hover-color: #2a2f50;
     --dp-hover-text-color: #ffffff;
     --dp-hover-icon-color: #959595;
     --dp-primary-color: #005cb2;
     --dp-primary-text-color: #ffffff;
     --dp-secondary-color: #a9a9a9;
-    --dp-border-color: #364254;
+    --dp-border-color: #1e223b;
     --dp-menu-border-color: #364254;
     --dp-border-color-hover: #aaaeb7;
     --dp-disabled-color: #737373;
-    --dp-scroll-bar-background: #1e293b;
-    --dp-scroll-bar-color: #3d4d68;
+    --dp-scroll-bar-background: #1e223b;
+    --dp-scroll-bar-color: #2a2f50;
     --dp-success-color: #538be7;
     --dp-success-color-disabled: #284878;
     --dp-icon-color: #959595;
     --dp-danger-color: #e53935;
+}
+
+.dark .dark-night {
+    background-color: #1e223b;
 }
 
 progress[value]::-webkit-progress-bar {
@@ -130,4 +134,79 @@ progress[value]::-webkit-progress-value {
     100% {
         transform: rotate(360deg);
     }
+}
+
+@keyframes fly {
+    100% {
+        transform: rotate(1turn) translate(100px) rotate(-1turn);
+    }
+}
+
+@keyframes flyPlus {
+    100% {
+        transform: rotate(-1turn) translate(100px) rotate(1turn);
+    }
+}
+
+.aurora-wrapper {
+    position: fixed;
+    z-index: 100;
+    opacity: 0.6;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.aurora {
+    position: absolute;
+    filter: blur(60px);
+    opacity: 0.8;
+    mix-blend-mode: color-dodge;
+}
+
+.one {
+    border-radius: 100%;
+    width: 600px;
+    height: 600px;
+    background-color: #373372;
+    left: -50px;
+    top: -300px;
+    z-index: 3;
+    animation: fly 12s linear infinite;
+    transform: rotate(0) translate(80px) rotate(0);
+}
+
+.two {
+    width: 90vh;
+    height: 120vh;
+    background-color: #661755;
+    opacity: 0.5;
+    left: -20vh;
+    border-radius: 60%;
+    filter: blur(200px);
+}
+
+.three {
+    border-radius: 100%;
+    width: 100vh;
+    height: 100vh;
+    bottom: -50vw;
+    right: -50vh;
+    opacity: 0.6;
+    background-color: #0b38a5;
+    animation: flyPlus 8s linear infinite;
+    transform: rotate(0) translate(100px) rotate(0);
+}
+
+.four {
+    border-radius: 100%;
+    width: 160vh;
+    height: 160vh;
+    bottom: -50vw;
+    right: -50vh;
+    opacity: 0.3;
+    background-color: #111c36;
+    animation: flyPlus 8s linear infinite;
+    transform: rotate(60deg) translate(300px) rotate(0);
 }

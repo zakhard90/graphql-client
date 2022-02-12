@@ -14,7 +14,7 @@
             py-2
             px-3
             text-gray-700
-            dark:bg-slate-800 dark:text-white
+            dark-night dark:text-white
           "
           v-model="store.token"
         >
@@ -50,7 +50,7 @@
             py-2
             px-3
             text-gray-700
-            dark:bg-slate-800 dark:text-white
+            dark-night dark:text-white
           "
           v-model="store.interval"
         >
