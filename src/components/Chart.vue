@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-2">
+  <div class="mt-0 md:mt-2">
     <canvas id="chart"> </canvas>
     <progress
       id="initialProgress"
@@ -93,7 +93,7 @@ const renderChart = (lineData, token) => {
     const initProgress = document.getElementById("initialProgress");
     const spinner = document.getElementById("spinner");
 
-    const ratio = window.innerWidth < 720 ? 1 : 16 / 9;
+    const ratio = window.innerWidth < 720 ? 3 / 4 : 16 / 9;
 
     if (target !== null) {
       let data = {

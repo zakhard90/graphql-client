@@ -6,7 +6,7 @@
         md:text-3xl md:text-left
         text-slate-900
         dark:text-white
-        mb-4
+        mb-2 md:mb-4 
       "
     >
       Uniswap V2 Liquidity
